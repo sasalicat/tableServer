@@ -150,7 +150,12 @@ namespace tableServer
                 {
                     Console.WriteLine("Exception:" + e.Message);
                     Console.WriteLine("customer" + customer.Id + "斷開連接");
+                    customer.CloseSocket();
                     customerList[customer.Id] = null;
+                    if (tableList.ContainsKey(customer.Id))
+                    {
+                        tableList[customer.Id] = null;
+                    }
                     break;
                 }
             }
@@ -197,6 +202,14 @@ namespace tableServer
             customerList = new Customer[MAX_CONNECT_NUM];
             subCustomers = new List<Customer>();
             tableList = new Dictionary<int, Table>();
+            //測試code--------------------------------------
+            linkCustomer c1 = new linkCustomer(94,null);
+            c1.name = "喵喵";
+            tableList[94] = new linkTable(c1, new Dictionary<byte, object>() { {0,"房間1"} });
+            linkCustomer c2 = new linkCustomer(87, null);
+            c1.name = "吼!一起上幫老e拔毛";
+            tableList[87] = new linkTable(c2, new Dictionary<byte, object>() { { 0, "房間2" } });
+            //----------------------------------------------
             Thread threadwatch = new Thread(WatchConnecting);
             //將窗體執行緒設定為與後臺同步，隨著主執行緒結束而結束  
             threadwatch.IsBackground = true;

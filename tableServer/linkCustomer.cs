@@ -19,6 +19,7 @@ namespace tableServer
         protected Socket linkedSocket=null;
         protected string passward = null;
         public digProcess activeProcess = null;
+        public string name;
         public bool linkedReady {
             get
             {
@@ -34,6 +35,7 @@ namespace tableServer
         protected virtual void action0_normalGreeting(string args)
         {
             Program.Log("custom "+Id+":[action 0]"+args);
+            name = args;
             string passward = "1q2w3e4r";
             this.passward = passward;
             string packet = "1~" + Id + "," + passward + "|";
@@ -66,9 +68,13 @@ namespace tableServer
             while (enums.MoveNext()) {
                 linkTable table = (linkTable)enums.Current.Value;
                 inf += enums.Current.Key;
-                inf += ':';
-                inf += (1 + table.numInside);
                 inf += ';';
+                inf += (table.numInside);
+                inf += ';';
+                inf += table.name;
+                inf += ';';
+                inf += table.getCustomerInf();
+                inf += ':';
             }
             inf += '|';
             Socket.Send(Encoding.UTF8.GetBytes(inf));
@@ -127,6 +133,12 @@ namespace tableServer
             if (buffer != null)
             {
                 int length = Socket.Receive(buffer);
+                if(length == 0)
+                {
+                    Socket.Shutdown(SocketShutdown.Both);
+                    Socket.Close();
+                    throw new SocketException();
+                }
                 encodePacket(buffer, length);
             }
             
@@ -186,5 +198,14 @@ namespace tableServer
             actionList = null;
             passward = null;
         }
+        public void CloseSocket()
+        {
+            if (Socket.Connected)
+            {
+                Socket.Shutdown(SocketShutdown.Both);
+                Socket.Close();
+            }
+        }
+
     }
 }

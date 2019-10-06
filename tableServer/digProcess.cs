@@ -47,9 +47,11 @@ namespace tableServer
         public void action()
         {
             process.nowState = this;
-            ((linkCustomer)node).activeProcess = process;
-            ((linkCustomer)node).tryConnect((linkCustomer)traget);
-            
+            if (node != null)
+            {
+                ((linkCustomer)node).activeProcess = process;
+                ((linkCustomer)node).tryConnect((linkCustomer)traget);
+            }
         }
         public void toNext(bool result)
         {
