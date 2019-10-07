@@ -207,7 +207,7 @@ namespace tableServer
             c1.name = "喵喵";
             tableList[94] = new linkTable(c1, new Dictionary<byte, object>() { {0,"房間1"} });
             linkCustomer c2 = new linkCustomer(87, null);
-            c1.name = "吼!一起上幫老e拔毛";
+            c2.name = "吼!一起上幫老e拔毛";
             tableList[87] = new linkTable(c2, new Dictionary<byte, object>() { { 0, "房間2" } });
             //----------------------------------------------
             Thread threadwatch = new Thread(WatchConnecting);
