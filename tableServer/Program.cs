@@ -41,15 +41,17 @@ namespace tableServer
         {
             return tableList.GetEnumerator();
         }
-        public bool createTable(Customer asker, Dictionary<byte, object> args)
+        public byte createTable(Customer asker, Dictionary<byte, object> args)
         {
             if (tableList.Count<=MAX_TABLE_NUM && !tableList.ContainsKey(asker.Id) && ((linkCustomer)asker).linkedReady)
             {
                 linkTable temp = new linkTable(asker,args);
                 tableList[asker.Id] = temp;
-                return true;
+                string packet = "3~" + code + "|";
+                asker.Socket.Send(Encoding.UTF8.GetBytes(packet));
+                return 1;
             }
-            return false;
+            return 0;
         }
 
 

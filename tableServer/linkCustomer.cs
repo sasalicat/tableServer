@@ -79,12 +79,21 @@ namespace tableServer
             inf += '|';
             Socket.Send(Encoding.UTF8.GetBytes(inf));
         }
+        protected virtual void aftCreateTable(byte code,linkTable room)
+        {
+            string packet = "3~";
+            packet += code + ";";
+            packet += room.getCustomerInf() + "|";
+            Socket.Send(Encoding.UTF8.GetBytes(packet));
+        }
         protected virtual void action3_createTable(string args)
         {
             Program.Log("custom " + Id + ":[action 3]" + args);
             Dictionary<byte, object> tableArg = new Dictionary<byte, object>();
             tableArg[0] = args;
-            Server.Main.createTable(this, tableArg);
+            byte code= Server.Main.createTable(this, tableArg);
+            
+
         }
         protected virtual void action4_connectRequest(string args)
         {

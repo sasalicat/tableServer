@@ -59,7 +59,7 @@ namespace tableServer
             get;
         }
         bool linked(int index, string pwd, Customer sub);
-        bool createTable(Customer asker, Dictionary<byte,object> args);
+        byte createTable(Customer asker, Dictionary<byte,object> args);
         Dictionary<int, Table>.Enumerator getTableList();//改成由customer呼叫,藉由此function customer得知目前的table情況如何
         void updateTable(Customer asker, Dictionary<byte, object> args);
         void tryConnectTable(int ownerId, Customer asker);
