@@ -47,10 +47,11 @@ namespace tableServer
             {
                 linkTable temp = new linkTable(asker,args);
                 tableList[asker.Id] = temp;
-                string packet = "3~" + code + "|";
+                string packet = "3~1;" +temp.getCustomerInf()+ "|";
                 asker.Socket.Send(Encoding.UTF8.GetBytes(packet));
                 return 1;
             }
+            asker.Socket.Send(Encoding.UTF8.GetBytes("3~0|"));
             return 0;
         }
 
@@ -156,7 +157,7 @@ namespace tableServer
                     customerList[customer.Id] = null;
                     if (tableList.ContainsKey(customer.Id))
                     {
-                        tableList[customer.Id] = null;
+                        tableList.Remove(customer.Id);
                     }
                     break;
                 }

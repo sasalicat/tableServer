@@ -122,6 +122,10 @@ namespace tableServer
 
              }
         }
+        protected virtual void action6_rename(string arg)
+        {
+            name = arg;
+        }
         protected virtual void initActionList() {
             actionList = new List<action>();
             actionList.Add(action0_normalGreeting);//action 0,普通的greeting
@@ -130,6 +134,7 @@ namespace tableServer
             actionList.Add(action3_createTable);
             actionList.Add(action4_connectRequest);
             actionList.Add(action5_processResult);
+            actionList.Add(action6_rename);
         }
         public linkCustomer(int id, Socket socket) : base(id, socket)
         {
