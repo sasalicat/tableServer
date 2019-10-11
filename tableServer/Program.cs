@@ -206,12 +206,13 @@ namespace tableServer
             subCustomers = new List<Customer>();
             tableList = new Dictionary<int, Table>();
             //測試code--------------------------------------
+            /*
             linkCustomer c1 = new linkCustomer(94,null);
             c1.name = "喵喵";
             tableList[94] = new linkTable(c1, new Dictionary<byte, object>() { {0,"房間1"} });
             linkCustomer c2 = new linkCustomer(87, null);
             c2.name = "吼!一起上幫老e拔毛";
-            tableList[87] = new linkTable(c2, new Dictionary<byte, object>() { { 0, "房間2" } });
+            tableList[87] = new linkTable(c2, new Dictionary<byte, object>() { { 0, "房間2" } });*/
             //----------------------------------------------
             Thread threadwatch = new Thread(WatchConnecting);
             //將窗體執行緒設定為與後臺同步，隨著主執行緒結束而結束  
@@ -229,13 +230,14 @@ namespace tableServer
             if (customerList[index] == null) {
                 return false;
             }
-            return ((linkCustomer)customerList[index]).setLinked(pwd, sub);
+            return ((linkCustomer)customerList[index]).setLinked(pwd, (IPEndPoint)sub.Socket.RemoteEndPoint);
         }
         public void decompositionCustomer(Customer customer)
         {
             customerList[customer.Id] = null;
             ((linkCustomer)customer).releseAbuseData();
-            subCustomers.Add(customer);
+            ((linkCustomer)customer).CloseSocket();
+            //subCustomers.Add(customer);
         }
 
         public void tryConnectTable(int ownerId, Customer asker)

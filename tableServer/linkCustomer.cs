@@ -16,14 +16,15 @@ namespace tableServer
         protected byte[] buffer;
         protected int orderCounting=0;
         protected List<action> actionList;
-        protected Socket linkedSocket=null;
+        protected IPEndPoint linkedEndPoint =null;
+        //protected Socket linkedSocket=null;
         protected string passward = null;
         public digProcess activeProcess = null;
         public string name;
         public bool linkedReady {
             get
             {
-                if (linkedSocket != null)
+                if (linkedEndPoint != null)
                 {
                     return true;
                 }
@@ -157,12 +158,14 @@ namespace tableServer
             }
             
         }
-        public virtual bool setLinked(string passward, Customer traget)
+        public virtual bool setLinked(string passward, IPEndPoint traget)
         {
+            
             if (passward == this.passward)
             {
-                linkedSocket = traget.Socket;
-                Program.Log("連接成功! customer" + Id + "->sub" + traget.Id);
+                linkedEndPoint = traget;
+                //linkedSocket = traget.Socket;
+                Program.Log("連接成功! customer" + Id + "->ip" + traget.Address+" port:"+traget.Port);
                 return true;
             }
             else
@@ -202,8 +205,8 @@ namespace tableServer
         }
         public virtual void tryConnect(linkCustomer other)
         {
-            string ip = ((IPEndPoint)other.linkedSocket.RemoteEndPoint).Address.ToString();
-            int port = ((IPEndPoint)other.linkedSocket.RemoteEndPoint).Port;
+            string ip = other.linkedEndPoint.Address.ToString();//((IPEndPoint)other.linkedSocket.RemoteEndPoint).Address.ToString();
+            int port = other.linkedEndPoint.Port;//((IPEndPoint)other.linkedSocket.RemoteEndPoint).Port;
             string packet = "2~"+ip+","+port+"|";
             Socket.Send(Encoding.UTF8.GetBytes(packet));
         }
