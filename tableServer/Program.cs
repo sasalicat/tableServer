@@ -11,6 +11,7 @@ namespace tableServer
     class Server : tableServer
     {
         private Socket SocketWatch;
+        private Socket LinkedSocket;
         //private Dictionary<string, Socket> ClientConnectionItems;
         private Dictionary<int,Table> tableList;
         private Customer[] customerList;
@@ -60,10 +61,13 @@ namespace tableServer
         {
             throw new NotImplementedException();
         }
+       
         void WatchConnecting()
         {
             Console.WriteLine("開啟監聽......");
-
+            Thread lkthread = new Thread(waitLinked);
+            lkthread.IsBackground = true;
+            lkthread.Start(LinkedSocket);
 
             //持續不斷監聽客戶端發來的請求     
             while (true)
@@ -123,7 +127,7 @@ namespace tableServer
 
             }
         }
-        public Server(IPEndPoint ipe)
+        public Server(IPEndPoint ipe,IPEndPoint link_ep)
         {
             if (main == null)
             {
@@ -132,10 +136,26 @@ namespace tableServer
                 SocketWatch.Bind(ipe);
                 //將套接字的監聽佇列長度限制為20  
                 SocketWatch.Listen(20);
+
+                LinkedSocket = new Socket(AddressFamily.InterNetwork,SocketType.Dgram,ProtocolType.Udp);
+
+                LinkedSocket.Bind(link_ep);
+
                 main = this;
             }
             else {
                 Console.WriteLine("錯誤!已經有一個Server物件存在");
+            }
+        }
+        void waitLinked(object socket)
+        {
+            Console.WriteLine("wait linked 開始");
+            byte[] buffer = new byte[1024];
+            while (true)
+            {
+                EndPoint remote = new IPEndPoint(IPAddress.Any, 0);
+                int length = LinkedSocket.ReceiveFrom(buffer, ref remote);
+                Console.WriteLine("linkedSocket:來自"+remote+":"+Encoding.UTF8.GetString(buffer,0,length));
             }
         }
         void recv(object socketclientpara)
@@ -363,8 +383,10 @@ namespace tableServer
             int port = 6000;
             IPAddress ip = IPAddress.Any;
             //將IP地址和埠號繫結到網路節點point上  
-            IPEndPoint ipe = new IPEndPoint(ip, port);
-            Server server = new Server(ipe);
+            IPEndPoint ipe = new IPEndPoint(IPAddress.Any, port);
+            int linkPort = 6001;
+            IPEndPoint link_ep = new IPEndPoint(IPAddress.Any, linkPort);
+            Server server = new Server(ipe,link_ep);
             //testServer server = new testServer(ipe);
             server.start();
 
