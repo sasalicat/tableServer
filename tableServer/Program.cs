@@ -156,6 +156,22 @@ namespace tableServer
                 EndPoint remote = new IPEndPoint(IPAddress.Any, 0);
                 int length = LinkedSocket.ReceiveFrom(buffer, ref remote);
                 Console.WriteLine("linkedSocket:來自"+remote+":"+Encoding.UTF8.GetString(buffer,0,length));
+                string packet =Encoding.UTF8.GetString(buffer, 0, length);
+                string[] part = packet.Split(';');
+                int index;
+                if(!int.TryParse(part[0],out index))
+                {
+                    Console.WriteLine("錯誤的linked 封包");
+                    continue;
+                }
+
+                if (linked(index, part[1], (IPEndPoint)remote))
+                {
+                    ((linkCustomer)((linkTableOwner)((linkTable)tableList[index]).Owner).owner).linkedFinish(1);
+                }
+                else {
+                    ((linkCustomer)((linkTableOwner)((linkTable)tableList[index]).Owner).owner).linkedFinish(0);
+                }
             }
         }
         void recv(object socketclientpara)
@@ -251,6 +267,14 @@ namespace tableServer
                 return false;
             }
             return ((linkCustomer)customerList[index]).setLinked(pwd, (IPEndPoint)sub.Socket.RemoteEndPoint);
+        }
+        public bool linked(int index, string pwd, IPEndPoint ep)
+        {
+            if (customerList[index] == null)
+            {
+                return false;
+            }
+            return ((linkCustomer)customerList[index]).setLinked(pwd,ep);
         }
         public void decompositionCustomer(Customer customer)
         {

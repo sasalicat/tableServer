@@ -210,6 +210,11 @@ namespace tableServer
             string packet = "2~"+ip+","+port+"|";
             Socket.Send(Encoding.UTF8.GetBytes(packet));
         }
+        public virtual void linkedFinish(int code)
+        {
+            string packet = "4~"+code+"|";
+            Socket.Send(Encoding.UTF8.GetBytes(packet));
+        }
         public void releseAbuseData() {
             buffer = null;
             actionList = null;
