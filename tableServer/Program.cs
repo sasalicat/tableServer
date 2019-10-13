@@ -167,10 +167,12 @@ namespace tableServer
 
                 if (linked(index, part[1], (IPEndPoint)remote))
                 {
-                    ((linkCustomer)((linkTableOwner)((linkTable)tableList[index]).Owner).owner).linkedFinish(1);
+                    //((linkCustomer)((linkTableOwner)((linkTable)tableList[index]).Owner).owner).linkedFinish(1);
+                    ((linkCustomer)customerList[index]).linkedFinish(1);
                 }
                 else {
-                    ((linkCustomer)((linkTableOwner)((linkTable)tableList[index]).Owner).owner).linkedFinish(0);
+                    //((linkCustomer)((linkTableOwner)((linkTable)tableList[index]).Owner).owner).linkedFinish(0);
+                    ((linkCustomer)customerList[index]).linkedFinish(0);
                 }
             }
         }
